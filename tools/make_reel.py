@@ -49,18 +49,18 @@ def http_get(url, timeout=120):
 
 # ---------- Pixabay ----------
 
-def search(query, need_seconds):
-    """조건에 맞는 후보 목록. 세로 영상을 앞에 둔다."""
+def search(query, need_seconds, video_id=None):
+    """조건에 맞는 후보 목록. 세로 영상을 앞에 둔다. video_id 가 있으면 그 영상 하나만."""
     key = os.environ.get("PIXABAY_API_KEY", "").strip()
     if not key:
         raise SystemExit("PIXABAY_API_KEY 가 비어 있음 (저장소 Secrets 확인)")
-    url = "https://pixabay.com/api/videos/?" + urllib.parse.urlencode(
+    params = {"key": key, "id": video_id} if video_id else \
         {"key": key, "q": query, "per_page": 30, "safesearch": "true", "video_type": "film"}
-    )
+    url = "https://pixabay.com/api/videos/?" + urllib.parse.urlencode(params)
     hits = json.loads(http_get(url, 30)).get("hits", [])
     cands = []
     for h in hits:
-        if h.get("duration", 0) < need_seconds + 0.5:
+        if h.get("duration", 0) < need_seconds + 0.5 and not video_id:
             continue
         rend = pick_rendition(h["videos"])
         if not rend:
@@ -202,11 +202,18 @@ def main(order_path):
             test_clip(i, src)
             start = 0.5
         else:
-            cands = search(sc["query"], secs)
-            if not cands:
-                raise SystemExit(f"장면 {i + 1}: '{sc['query']}' 검색 결과 없음 — 검색어를 바꿔야 함")
-            pick = min(pick, len(cands) - 1)
-            c = cands[pick]
+            cands = search(sc.get("query", ""), secs)
+            if sc.get("id"):  # 고정된 영상: 검색 순서가 바뀌어도 같은 클립
+                fixed = search("", secs, int(sc["id"]))
+                if not fixed:
+                    raise SystemExit(f"장면 {i + 1}: 영상 id {sc['id']} 를 찾지 못함")
+                c = fixed[0]
+                pick = next((k for k, x in enumerate(cands) if x["id"] == c["id"]), -1)
+            else:
+                if not cands:
+                    raise SystemExit(f"장면 {i + 1}: '{sc['query']}' 검색 결과 없음 — 검색어를 바꿔야 함")
+                pick = min(pick, len(cands) - 1)
+                c = cands[pick]
             Path(src).write_bytes(http_get(c["url"], 300))
             start = float(sc.get("start", min(1.0, max(0.0, c["duration"] - secs - 0.2))))
             credits.append({"scene": i + 1, "query": sc["query"], "pick": pick, "pixabay_id": c["id"],
