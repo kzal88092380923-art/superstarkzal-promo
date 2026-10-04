@@ -1,0 +1,43 @@
+{
+  "order_hash": "b60e5c3e3c5f316e",
+  "seconds": 10.5,
+  "source": "Pixabay",
+  "credits": [
+    {
+      "scene": 1,
+      "query": "dog looking at camera",
+      "pick": 0,
+      "pixabay_id": 14869,
+      "page": "https://pixabay.com/videos/id-14869/",
+      "user": "moshehar",
+      "vertical": false
+    },
+    {
+      "scene": 2,
+      "query": "cat staring",
+      "pick": 0,
+      "pixabay_id": 130789,
+      "page": "https://pixabay.com/videos/id-130789/",
+      "user": "MabelAmber",
+      "vertical": false
+    },
+    {
+      "scene": 3,
+      "query": "puppy head tilt",
+      "pick": 0,
+      "pixabay_id": 139433,
+      "page": "https://pixabay.com/videos/id-139433/",
+      "user": "u_j6kfoqr1k7",
+      "vertical": true
+    },
+    {
+      "scene": 4,
+      "query": "dog and cat together",
+      "pick": 0,
+      "pixabay_id": 245932,
+      "page": "https://pixabay.com/videos/id-245932/",
+      "user": "xBriantcx",
+      "vertical": true
+    }
+  ]
+}
