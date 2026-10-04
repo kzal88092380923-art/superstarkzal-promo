@@ -166,10 +166,75 @@ def overlay_png(badge, text, sub, path):
 
 def render_scene(src, start, seconds, png, out):
     vf = (f"[0:v]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
-          f"fps={FPS},setsar=1,eq=saturation=1.08[v];[v][1:v]overlay=0:0[o]")
+          f"fps={FPS},setsar=1,eq=saturation=1.08,tpad=stop_mode=clone:stop_duration=6[v];[v][1:v]overlay=0:0[o]")
     run(["ffmpeg", "-y", "-ss", f"{start}", "-t", f"{seconds}", "-i", src, "-loop", "1", "-t", f"{seconds}",
          "-i", png, "-filter_complex", vf, "-map", "[o]", "-t", f"{seconds}", "-an",
          "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p", out])
+
+
+# ---------- 소리 ----------
+
+VOICES = {  # 짧은 별칭 → edge-tts 목소리
+    "여자": "ko-KR-SunHiNeural",
+    "남자": "ko-KR-InJoonNeural",
+    "남자2": "ko-KR-HyunsuMultilingualNeural",
+}
+
+
+def duration(path):
+    r = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", path],
+                       capture_output=True, text=True)
+    return float(r.stdout.strip() or 0)
+
+
+def tts(text, voice, rate, out_wav):
+    """마이크로소프트 온라인 음성(edge-tts)으로 한 문장 생성 → wav."""
+    mp3 = out_wav + ".mp3"
+    if TEST:
+        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "sine=f=440:d=1.6", mp3])
+    else:
+        last = ""
+        for _ in range(3):
+            r = subprocess.run([sys.executable, "-m", "edge_tts", "--voice", VOICES.get(voice, voice),
+                                f"--rate={rate}", "--text", text, "--write-media", mp3],
+                               capture_output=True, text=True)
+            if r.returncode == 0 and os.path.getsize(mp3) > 1000:
+                break
+            last = r.stderr[-800:]
+        else:
+            raise SystemExit("음성 생성 실패: " + last)
+    # 앞뒤 무음 정리
+    run(["ffmpeg", "-y", "-i", mp3, "-af",
+         "silenceremove=start_periods=1:start_threshold=-45dB,areverse,"
+         "silenceremove=start_periods=1:start_threshold=-45dB,areverse",
+         "-ar", "44100", "-ac", "2", out_wav])
+    return duration(out_wav)
+
+
+def build_audio(scene_secs, voice_wavs, bgm, bgm_vol, out_m4a, tmp):
+    """장면별 음성을 장면 시작에 맞춰 깔고, 배경음악을 아래에 섞는다."""
+    total = sum(scene_secs)
+    inputs, chains, labels = [], [], []
+    for i, (secs, wav) in enumerate(zip(scene_secs, voice_wavs)):
+        if wav:
+            inputs += ["-i", wav]
+            chains.append(f"[{inputs.count('-i') - 1}:a]adelay=150|150,apad,atrim=0:{secs},asetpts=N/SR/TB[s{i}]")
+        else:
+            inputs += ["-f", "lavfi", "-t", f"{secs}", "-i", "anullsrc=r=44100:cl=stereo"]
+            chains.append(f"[{inputs.count('-i') - 1}:a]atrim=0:{secs},asetpts=N/SR/TB[s{i}]")
+        labels.append(f"[s{i}]")
+    chains.append("".join(labels) + f"concat=n={len(labels)}:v=0:a=1,aformat=sample_rates=44100:channel_layouts=stereo[voice]")
+    if bgm:
+        inputs += ["-stream_loop", "-1", "-i", bgm]
+        b = inputs.count("-i") - 1
+        fade = max(0.0, total - 1.2)
+        chains.append(f"[{b}:a]aformat=sample_rates=44100:channel_layouts=stereo,atrim=0:{total},"
+                      f"volume={bgm_vol},afade=t=in:d=0.3,afade=t=out:st={fade}:d=1.2[bg]")
+        chains.append("[voice][bg]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95[out]")
+    else:
+        chains.append("[voice]anull[out]")
+    run(["ffmpeg", "-y", *inputs, "-filter_complex", ";".join(chains), "-map", "[out]", "-t", f"{total}",
+         "-c:a", "aac", "-b:a", "160k", out_m4a])
 
 
 def test_clip(i, path):
@@ -192,10 +257,24 @@ def main(order_path):
             return
 
     badge = order.get("badge", "")
+    voice = order.get("voice", "")          # "" 이면 음성 없음
+    rate = order.get("rate", "+10%")
+    bgm = order.get("bgm", "")              # 저장소 안 음악 파일 경로, "" 이면 없음
+    if bgm and not Path(bgm).exists():
+        raise SystemExit(f"배경음악 파일 없음: {bgm}")
+    bgm_vol = float(order.get("bgm_volume", 0.16 if voice else 0.6))
     tmp = Path(tempfile.mkdtemp())
-    parts, credits, sheet_rows = [], [], []
+    parts, credits, sheet_rows, scene_secs, voice_wavs = [], [], [], [], []
     for i, sc in enumerate(order["scenes"]):
         secs = float(sc.get("seconds", 2.5))
+        wav = None
+        say = sc.get("say", sc.get("text", "").replace("\n", " ")) if voice else ""
+        if say:
+            wav = str(tmp / f"v{i}.wav")
+            secs = max(secs, tts(say, sc.get("voice", voice), sc.get("rate", rate), wav) + 0.45)
+        secs = round(secs, 2)
+        scene_secs.append(secs)
+        voice_wavs.append(wav)
         pick = int(sc.get("pick", 0))
         src = str(tmp / f"src{i}.mp4")
         if TEST:
@@ -228,10 +307,11 @@ def main(order_path):
 
     lst = tmp / "list.txt"
     lst.write_text("".join(f"file '{p}'\n" for p in parts))
-    total = sum(float(s.get("seconds", 2.5)) for s in order["scenes"])
-    run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", str(lst), "-f", "lavfi", "-t", f"{total}",
-         "-i", "anullsrc=r=44100:cl=stereo", "-c:v", "copy", "-c:a", "aac", "-b:a", "96k",
-         "-shortest", "-movflags", "+faststart", str(mp4)])
+    total = sum(scene_secs)
+    audio = str(tmp / "audio.m4a")
+    build_audio(scene_secs, voice_wavs, bgm, bgm_vol, audio, tmp)
+    run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", str(lst), "-i", audio,
+         "-map", "0:v", "-map", "1:a", "-c", "copy", "-t", f"{total}", "-movflags", "+faststart", str(mp4)])
 
     # 미리보기: 장면마다 한 컷씩 가로로 붙인 캡처
     n = len(parts)
@@ -247,7 +327,8 @@ def main(order_path):
     if sheet_rows:
         candidates_sheet(sheet_rows, out_dir / f"{name}.candidates.jpg")
 
-    meta_path.write_text(json.dumps({"order_hash": digest, "seconds": total, "source": "Pixabay",
+    meta_path.write_text(json.dumps({"order_hash": digest, "seconds": round(total, 2), "source": "Pixabay",
+                                     "voice": VOICES.get(voice, voice), "bgm": bgm,
                                      "credits": credits}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"완성: {mp4} ({total:.1f}초)")
 

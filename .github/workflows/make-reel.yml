@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "pet/orders/**.json"
+      - "pet/bgm/**"
       - "tools/make_reel.py"
       - ".github/workflows/make-reel.yml"
   workflow_dispatch:
@@ -27,7 +28,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg fonts-noto-cjk
-          pip install --quiet pillow
+          pip install --quiet pillow edge-tts
 
       - name: Make reels
         env:

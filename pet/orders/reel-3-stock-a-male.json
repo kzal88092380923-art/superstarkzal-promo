@@ -1,5 +1,5 @@
 {
-  "name": "reel-3-stock-a",
+  "name": "reel-3-stock-a-male",
   "badge": "강아지·고양이 성격 테스트",
   "scenes": [
     {
@@ -30,6 +30,6 @@
       "say": "지금 프로필 링크에서 무료로 테스트해 보세요"
     }
   ],
-  "voice": "여자",
+  "voice": "남자",
   "rate": "+10%"
 }
