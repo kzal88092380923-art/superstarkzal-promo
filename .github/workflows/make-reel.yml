@@ -1,0 +1,52 @@
+name: make-reel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pet/orders/**.json"
+      - "tools/make_reel.py"
+      - ".github/workflows/make-reel.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: make-reel
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-cjk
+          pip install --quiet pillow
+
+      - name: Make reels
+        env:
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+        run: |
+          shopt -s nullglob
+          for f in pet/orders/*.json; do
+            python tools/make_reel.py "$f"
+          done
+
+      - name: Save results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pet/reels
+          if git diff --cached --quiet; then
+            echo "변경 없음"
+          else
+            git commit -m "auto reel build"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi

@@ -1,0 +1,10 @@
+{
+  "name": "reel-3-stock-a",
+  "badge": "강아지·고양이 성격 테스트",
+  "scenes": [
+    { "query": "dog looking at camera", "seconds": 2.5, "pick": 0, "text": "우리 애는\n무슨 유형일까?" },
+    { "query": "cat staring", "seconds": 2.5, "pick": 0, "text": "츤데레?\n애교쟁이?" },
+    { "query": "puppy head tilt", "seconds": 2.5, "pick": 0, "text": "8가지 유형 중\n하나가 나와요" },
+    { "query": "dog and cat together", "seconds": 3.0, "pick": 0, "text": "지금 무료로\n테스트하기", "sub": "프로필 링크 클릭" }
+  ]
+}
