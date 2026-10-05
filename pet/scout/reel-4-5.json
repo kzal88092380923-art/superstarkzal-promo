@@ -1,0 +1,13 @@
+{
+  "min_seconds": 8,
+  "queries": [
+    "dog sleeping on sofa",
+    "dog cuddling",
+    "dog waiting at door",
+    "dog lying on bed",
+    "cat staring at camera",
+    "cat ignoring",
+    "cat lying looking",
+    "cat close up eyes"
+  ]
+}

@@ -5,8 +5,9 @@ on:
     branches: [main]
     paths:
       - "pet/orders/**.json"
+      - "pet/scout/*.json"
       - "pet/bgm/**"
-      - "tools/make_reel.py"
+      - "tools/**.py"
       - ".github/workflows/make-reel.yml"
   workflow_dispatch:
 
@@ -20,7 +21,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
@@ -28,11 +29,24 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg fonts-noto-cjk
-          pip install --quiet pillow edge-tts
+          pip install --quiet pillow edge-tts numpy
+
+      - name: Scout clips
+        env:
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+        run: |
+          shopt -s nullglob
+          for f in pet/scout/*.json; do
+            case "$f" in *.result.json) continue;; esac
+            if [ ! -f "${f%.json}.jpg" ] || [ "$f" -nt "${f%.json}.jpg" ]; then
+              python tools/scout.py "$f"
+            fi
+          done
 
       - name: Make reels
         env:
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           shopt -s nullglob
           for f in pet/orders/*.json; do
@@ -40,10 +54,11 @@ jobs:
           done
 
       - name: Save results
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add pet/reels
+          git add pet/reels pet/scout
           if git diff --cached --quiet; then
             echo "변경 없음"
           else
