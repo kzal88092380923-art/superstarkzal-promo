@@ -255,6 +255,10 @@ def main(order_path):
         if json.loads(meta_path.read_text()).get("order_hash") == digest:
             print(f"건너뜀(변경 없음): {name}")
             return
+    if order.get("timeline"):
+        import reel_v2
+        reel_v2.main(order, order_path, digest)
+        return
 
     badge = order.get("badge", "")
     voice = order.get("voice", "")          # "" 이면 음성 없음

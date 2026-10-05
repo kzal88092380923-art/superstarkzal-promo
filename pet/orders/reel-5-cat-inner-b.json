@@ -1,0 +1,64 @@
+{
+  "name": "reel-5-cat-inner-b",
+  "timeline": true,
+  "seconds": 9,
+  "music": "lazy",
+  "clips": [
+    {
+      "id": 130789,
+      "start": 0.5,
+      "seconds": 9
+    }
+  ],
+  "voice": {
+    "name": "Leda",
+    "style": "Say the following line in Korean as the inner voice of a sulky, unimpressed house cat. Low, slow, lazy and a little smug, casual tone, like the cat can't be bothered. Read only the line:",
+    "start": 0.6,
+    "gap": 0.35,
+    "lines": [
+      {
+        "say": "들었어.",
+        "text": "들었어.",
+        "size": 68
+      },
+      {
+        "say": "근데, 내가 왜 가?",
+        "text": "근데 내가 왜 가?",
+        "size": 68
+      },
+      {
+        "say": "간식 소리 나면, 생각해볼게.",
+        "text": "간식 소리 나면… 생각해볼게",
+        "size": 68
+      }
+    ]
+  },
+  "texts": [
+    {
+      "text": "이름 불렀을 때\n고양이 속마음",
+      "size": 80,
+      "from": 0,
+      "to": "end",
+      "box": [
+        0,
+        0,
+        0,
+        190
+      ]
+    },
+    {
+      "text": "이런 애 = '도도한 관찰자형' ㅋㅋ\n너네 냥이는?",
+      "pos": "center",
+      "size": 66,
+      "from": 0,
+      "to": 2.8,
+      "after_voice": 0.3,
+      "box": [
+        0,
+        0,
+        0,
+        190
+      ]
+    }
+  ]
+}
