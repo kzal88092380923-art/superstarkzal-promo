@@ -274,9 +274,14 @@ def base_video(clips, tmp, total):
         credits.append(cred)
         out = str(tmp / f"base{i}.mp4")
         hflip = ",hflip" if c.get("flip") else ""
+        cover = (f"scale={W}:{H}:force_original_aspect_ratio=increase,"
+                 f"crop={W}:{H}:(iw-{W})*{float(c.get('focus_x', 0.5))}:(ih-{H})*{float(c.get('focus_y', 0.5))}{hflip}")
+        oy = int(c.get("offset_y", 0))
+        if oy:  # 영상을 아래로 내리고 위는 같은 영상을 흐리게 깔아 채움 (제목이 얼굴을 안 가리게)
+            cover = (f"split[a][b];[a]{cover},boxblur=40:2,eq=brightness=-0.18[bg];[b]{cover}[fg];"
+                     f"[bg][fg]overlay=0:{oy}")
         mr.run(["ffmpeg", "-y", "-ss", str(c.get("start", 0)), "-t", str(c["seconds"]), "-i", src, "-vf",
-                f"scale={W}:{H}:force_original_aspect_ratio=increase,"
-                f"crop={W}:{H}:(iw-{W})*{float(c.get('focus_x', 0.5))}:(ih-{H})*{float(c.get('focus_y', 0.5))}{hflip},fps={FPS},setsar=1,"
+                f"{cover},fps={FPS},setsar=1,"
                 f"tpad=stop_mode=clone:stop_duration=8,eq=saturation=1.06",
                 "-t", str(c["seconds"]), "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", out])
         parts.append(out)
