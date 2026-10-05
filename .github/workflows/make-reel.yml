@@ -58,11 +58,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add pet/reels pet/scout
+          for d in pet/reels pet/scout pet/voice-cache; do [ -d "$d" ] && git add "$d"; done
           if git diff --cached --quiet; then
             echo "변경 없음"
           else
             git commit -m "auto reel build"
-            git pull --rebase origin main
+            git pull --rebase -X theirs origin main
             git push origin HEAD:main
           fi

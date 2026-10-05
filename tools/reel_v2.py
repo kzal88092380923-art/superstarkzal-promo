@@ -126,7 +126,27 @@ def gemini_models(key):
     return sorted(names, key=rank)
 
 
+CACHE = Path("pet/voice-cache")
+
+
 def gemini_tts(text, voice, style, out_wav):
+    """같은 대사·목소리·톤은 저장소에 캐시 → 다시 빌드해도 무료 사용량을 안 씀."""
+    import hashlib
+    import shutil
+    key = hashlib.sha1(f"{voice}|{style}|{text}".encode()).hexdigest()[:16]
+    cached = CACHE / f"{key}.wav"
+    if cached.exists() and not TEST:
+        shutil.copy(cached, out_wav)
+        print(f"  음성(캐시): {voice} / {text}")
+        return mr.duration(out_wav)
+    dur = _gemini_tts(text, voice, style, out_wav)
+    if not TEST:
+        CACHE.mkdir(parents=True, exist_ok=True)
+        shutil.copy(out_wav, cached)
+    return dur
+
+
+def _gemini_tts(text, voice, style, out_wav):
     if TEST:
         mr.run(["ffmpeg", "-y", "-f", "lavfi", "-i", f"sine=f=330:d={0.25 + 0.09 * len(text)}",
                 "-ar", str(SR), "-ac", "2", out_wav])
