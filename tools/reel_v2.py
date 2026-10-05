@@ -275,7 +275,8 @@ def base_video(clips, tmp, total):
         out = str(tmp / f"base{i}.mp4")
         hflip = ",hflip" if c.get("flip") else ""
         mr.run(["ffmpeg", "-y", "-ss", str(c.get("start", 0)), "-t", str(c["seconds"]), "-i", src, "-vf",
-                f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H}{hflip},fps={FPS},setsar=1,"
+                f"scale={W}:{H}:force_original_aspect_ratio=increase,"
+                f"crop={W}:{H}:(iw-{W})*{float(c.get('focus_x', 0.5))}:(ih-{H})*{float(c.get('focus_y', 0.5))}{hflip},fps={FPS},setsar=1,"
                 f"tpad=stop_mode=clone:stop_duration=8,eq=saturation=1.06",
                 "-t", str(c["seconds"]), "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", out])
         parts.append(out)
