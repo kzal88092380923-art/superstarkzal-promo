@@ -1,0 +1,56 @@
+{
+  "name": "reel-6-bigdog-inner",
+  "timeline": true,
+  "seconds": 10,
+  "music": "lazy",
+  "zoom": false,
+  "clips": [
+    {
+      "file": "pet/footage/pexels-14882042-big-dog.mp4",
+      "source": "Pexels 14882042",
+      "start": 0,
+      "seconds": 15
+    }
+  ],
+  "voice": {
+    "name": "Enceladus",
+    "style": "whiny, childish and sulky, like a huge tough-looking dog who is secretly a baby",
+    "start": 0.2,
+    "gap": 0.3,
+    "box": "none",
+    "lines": [
+      {
+        "say": "아, 배고파.",
+        "text": "아… 배고파"
+      },
+      {
+        "say": "간지 나게 앉아 있으래서, 앉아 있는데.",
+        "text": "간지 나게 앉아 있으래서\n앉아 있는데"
+      },
+      {
+        "say": "다리 저려. 집 가서, 간식 먹고 싶다.",
+        "text": "다리 저려…\n집 가서 간식 먹고 싶다"
+      }
+    ]
+  },
+  "texts": [
+    {
+      "text": "덩치 큰 강아지 속마음",
+      "pos": "abs",
+      "y": 1170,
+      "size": 76,
+      "from": 0,
+      "to": "end",
+      "box": "none"
+    },
+    {
+      "text": "겉은 맹수, 속은 애기 ㅋㅋ\n너네 애는?",
+      "pos": "center",
+      "size": 70,
+      "from": 0,
+      "to": 2.6,
+      "after_voice": 0.3,
+      "box": "none"
+    }
+  ]
+}

@@ -85,16 +85,25 @@ def layout(texts):
 
 
 def render_state(texts, now, path, karaoke=None):
+    from PIL import ImageFilter
     im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
+    sh = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d, ds = ImageDraw.Draw(im), ImageDraw.Draw(sh)
     for t in texts:
         if t["from"] <= now < t["to"]:
             hl = None
             if karaoke and karaoke.get("text_id") == id(t):
                 hl = karaoke["hl"]
-            draw_box_lines(d, t["_lines"], t["_font"], t["_y"], highlight=hl,
-                           box=tuple(t.get("box", (0, 0, 0, 165))))
-    im.save(path)
+            if t.get("box") == "none":  # 박스 없이 흰 글씨 + 부드러운 그림자 (인스타 기본 느낌)
+                draw_box_lines(ds, t["_lines"], t["_font"], t["_y"] + 3, fill=(0, 0, 0, 230), box=(0, 0, 0, 0))
+                draw_box_lines(d, t["_lines"], t["_font"], t["_y"], highlight=hl, box=(0, 0, 0, 0))
+            else:
+                draw_box_lines(d, t["_lines"], t["_font"], t["_y"], highlight=hl,
+                               box=tuple(t.get("box", (0, 0, 0, 165))))
+    sh = sh.filter(ImageFilter.GaussianBlur(7))
+    a = sh.getchannel("A").point(lambda v: min(255, v * 2))
+    sh.putalpha(a)
+    Image.alpha_composite(sh, im).save(path)
 
 
 def karaoke_slots(t, start, dur):
@@ -277,6 +286,8 @@ def write_wav(path, mono):
 
 def fetch_clip(c, tmp, i):
     src = str(tmp / f"clip{i}.mp4")
+    if c.get("file"):  # 사용자가 보낸 영상 (저장소에 저장된 파일)
+        return c["file"], {"file": c["file"], "source": c.get("source", "")}
     if TEST:
         mr.test_clip(i, src)
         return src, {"pixabay_id": None}
@@ -333,6 +344,7 @@ def main(order, order_path, digest):
         cursor = at + dur + float(vo.get("gap", 0.25))
         if ln.get("caption", True):
             texts.append({"text": ln.get("text", ln["say"]), "pos": "bottom", "size": ln.get("size", 64),
+                          "box": vo.get("box", [0, 0, 0, 165]),
                           "from": at, "to": at + dur + 0.25, "_voice": (at, dur)})
     voice_end = max([a + d for a, _, d in voice_items], default=0)
 
@@ -377,8 +389,9 @@ def main(order, order_path, digest):
     base, credits = base_video(order["clips"], tmp, total)
     frames = int(total * FPS)
     z = f"if(lt(on,18),1.12-0.12*on/18,1+0.035*(on-18)/{max(frames - 18, 1)})"
-    vf = (f"[0:v]scale={W * 2}:{H * 2},zoompan=z='{z}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:"
-          f"s={W}x{H}:fps={FPS}[bg];"
+    bg = (f"[0:v]scale={W * 2}:{H * 2},zoompan=z='{z}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:"
+          f"s={W}x{H}:fps={FPS}[bg];") if order.get("zoom", True) else "[0:v]null[bg];"
+    vf = (bg +
           f"[1:v]format=rgba,fps={FPS}[tx];[bg][tx]overlay=0:0:shortest=1[v1];"
           f"color=c=white@0.85:s={W}x8:r={FPS}[bar];[v1][bar]overlay=x='-W+W*t/{total}':y=0:shortest=1,"
           f"format=yuv420p[v]")
