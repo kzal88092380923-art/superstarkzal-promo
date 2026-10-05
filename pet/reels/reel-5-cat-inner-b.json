@@ -1,6 +1,6 @@
 {
-  "order_hash": "0c2eef3027dd4544",
-  "seconds": 13.05,
+  "order_hash": "a0fc991fcf05a113",
+  "seconds": 12.73,
   "source": "Pixabay",
   "credits": [
     {
@@ -11,8 +11,8 @@
   ],
   "voice": "Leda",
   "voice_lines": [
-    1.78,
-    2.99,
-    3.88
+    1.76,
+    2.58,
+    3.99
   ]
 }
