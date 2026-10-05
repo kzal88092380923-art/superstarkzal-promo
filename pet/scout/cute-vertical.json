@@ -1,0 +1,18 @@
+{
+ "min_seconds": 3,
+ "vertical_only": true,
+ "queries": [
+  "kitten playing",
+  "kitten",
+  "cute kitten",
+  "puppy",
+  "cute puppy",
+  "puppy running",
+  "puppy playing",
+  "kitten sleeping",
+  "dog funny",
+  "cat funny",
+  "puppy sleeping",
+  "kitten meow"
+ ]
+}

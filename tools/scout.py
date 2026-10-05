@@ -49,7 +49,10 @@ def main(path):
     spec = json.loads(path.read_text(encoding="utf-8"))
     rows, listing = [], {}
     for q in spec["queries"]:
-        cands = mr.search(q, float(spec.get("min_seconds", 6)))[:12]
+        cands = mr.search(q, float(spec.get("min_seconds", 6)))
+        if spec.get("vertical_only"):
+            cands = [c for c in cands if c["vertical"]]
+        cands = cands[:12]
         rows.append((q, cands))
         listing[q] = [{k: c[k] for k in ("id", "duration", "vertical", "page")} for c in cands]
         print(f"{q}: {len(cands)}개")
