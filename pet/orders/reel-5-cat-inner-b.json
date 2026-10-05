@@ -12,7 +12,7 @@
   ],
   "voice": {
     "name": "Leda",
-    "style": "Say the following line in Korean as the inner voice of a sulky, unimpressed house cat. Low, slow, lazy and a little smug, casual tone, like the cat can't be bothered. Read only the line:",
+    "style": "sulky, lazy, unimpressed and slightly smug",
     "start": 0.6,
     "gap": 0.35,
     "lines": [

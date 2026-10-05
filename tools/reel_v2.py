@@ -134,14 +134,31 @@ def gemini_tts(text, voice, style, out_wav):
     key = os.environ.get("GEMINI_API_KEY", "").strip()
     if not key:
         raise SystemExit("GEMINI_API_KEY 가 비어 있음 (저장소 Secrets 확인)")
-    prompt = f"{style}\n\n{text}" if style else text
+    # 지시문을 길게 쓰면 지시문까지 읽어버림 → "Say in a ~ tone: 대사" 한 줄만. 그래도 길면 지시 없이.
+    prompts = ([f"Say in a {style} tone: {text}"] if style else []) + [text]
+    limit = 1.2 + 0.42 * len(text.replace(" ", ""))   # 대사 길이에 비해 너무 길면 지시문까지 읽은 것
+    errors = []
+    models = gemini_models(key)[:3]
+    for prompt in prompts:
+        for model in models:
+            dur = _gemini_once(key, model, voice, prompt, out_wav, errors)
+            if dur is None:
+                continue
+            if dur <= limit:
+                print(f"  음성: {model} / {voice} / {dur:.2f}s / {'지시 O' if prompt != text else '지시 X'}")
+                return dur
+            errors.append(f"{model}: 음성이 {dur:.1f}초로 너무 김 (지시문까지 읽은 듯)")
+            break
+    raise SystemExit("Gemini 음성 생성 실패\n" + "\n".join(errors))
+
+
+def _gemini_once(key, model, voice, prompt, out_wav, errors):
     body = json.dumps({
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {"responseModalities": ["AUDIO"],
                              "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voice}}}},
     }).encode()
-    errors = []
-    for model in gemini_models(key)[:4]:
+    for _ in [model]:
         for attempt in range(4):
             req = urllib.request.Request(f"{GEMINI}/models/{model}:generateContent?key={key}", data=body,
                                          headers={**mr.UA, "Content-Type": "application/json"})
@@ -157,7 +174,6 @@ def gemini_tts(text, voice, style, out_wav):
                         "silenceremove=start_periods=1:start_threshold=-45dB,areverse,"
                         "silenceremove=start_periods=1:start_threshold=-45dB,areverse",
                         "-ar", str(SR), "-ac", "2", out_wav])
-                print(f"  음성: {model} / {voice}")
                 return mr.duration(out_wav)
             except urllib.error.HTTPError as e:
                 msg = e.read().decode(errors="ignore")[:300]
@@ -166,11 +182,11 @@ def gemini_tts(text, voice, style, out_wav):
                     time.sleep(40)
                     continue
                 errors.append(f"{model} {e.code}: {msg}")
-                break
+                return None
             except Exception as e:  # 응답에 오디오가 없을 때 등
                 errors.append(f"{model}: {e}")
-                break
-    raise SystemExit("Gemini 음성 생성 실패\n" + "\n".join(errors))
+                return None
+    return None
 
 
 # ---------------- 소리 합성 ----------------
