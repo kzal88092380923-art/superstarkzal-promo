@@ -1,0 +1,51 @@
+{
+  "name": "reel-7-mustache-cat",
+  "timeline": true,
+  "seconds": 5,
+  "music": "lazy",
+  "zoom": false,
+  "clips": [
+    {
+      "file": "pet/footage/user-mustache-cat.mp4",
+      "source": "사용자 촬영 IMG_5350",
+      "start": 0,
+      "seconds": 5.1
+    }
+  ],
+  "voice": {
+    "name": "Enceladus",
+    "style": "demanding, impatient and a little sassy",
+    "start": 0.2,
+    "gap": 0.25,
+    "box": "none",
+    "lines": [
+      {
+        "say": "밥그릇, 비었거든?",
+        "text": "밥그릇 비었거든?"
+      },
+      {
+        "say": "빨리 채워줘. 기다린다.",
+        "text": "빨리 채워줘… 기다린다"
+      }
+    ]
+  },
+  "texts": [
+    {
+      "text": "콧수염 냥이 속마음",
+      "size": 80,
+      "from": 0,
+      "to": "end",
+      "box": "none"
+    },
+    {
+      "text": "우리 애 유형 궁금하면\n→ 프로필 링크",
+      "pos": "abs",
+      "y": 1240,
+      "size": 68,
+      "from": 0,
+      "to": 1.8,
+      "after_voice": 0.2,
+      "box": "none"
+    }
+  ]
+}
