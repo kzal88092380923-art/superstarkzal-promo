@@ -1,5 +1,5 @@
 {
-  "name": "reel-7-mustache-cat",
+  "name": "reel-7-mustache-cat-b",
   "timeline": true,
   "seconds": 5,
   "music": "lazy",
@@ -19,7 +19,7 @@
     }
   ],
   "voice": {
-    "name": "Leda",
+    "name": "Zephyr",
     "style": "cute, sweet and high-pitched like a tiny kitten, whiny and pleading with lots of aegyo",
     "start": 0.2,
     "gap": 0.25,
