@@ -1,6 +1,6 @@
 {
-  "order_hash": "b13272ea47324fb9",
-  "seconds": 7.62,
+  "order_hash": "2f6287eb0a9052e8",
+  "seconds": 8.14,
   "source": "Pixabay",
   "credits": [
     {
@@ -12,9 +12,9 @@
       "source": "사용자 촬영 IMG_5350 (역재생)"
     }
   ],
-  "voice": "Leda",
+  "voice": "Zephyr",
   "voice_lines": [
-    2.45,
-    2.73
+    2.69,
+    3.01
   ]
 }
