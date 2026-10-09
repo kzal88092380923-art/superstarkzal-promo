@@ -1,0 +1,79 @@
+{
+  "name": "reel-8-mustache-commute",
+  "timeline": true,
+  "seconds": 12,
+  "music": "lazy",
+  "zoom": false,
+  "clips": [
+    {
+      "file": "pet/footage/user-mustache-cat-walk.mp4",
+      "source": "사용자 촬영 IMG_5374",
+      "start": 0.0,
+      "seconds": 1.9
+    },
+    {
+      "file": "pet/footage/user-mustache-cat-box.mp4",
+      "source": "사용자 촬영 IMG_5375",
+      "start": 0.6,
+      "seconds": 3.4
+    },
+    {
+      "file": "pet/footage/user-mustache-cat-box.mp4",
+      "source": "사용자 촬영 IMG_5375",
+      "start": 10.0,
+      "seconds": 2.8
+    },
+    {
+      "file": "pet/footage/user-mustache-cat-nap.mp4",
+      "source": "사용자 촬영 IMG_5376",
+      "start": 2.3,
+      "seconds": 4.3
+    }
+  ],
+  "voice": {
+    "name": "Zephyr",
+    "style": "cute, sweet and high-pitched like a tiny kitten, a little smug and sassy",
+    "box": "none",
+    "lines": [
+      {
+        "at": 0.2,
+        "say": "출근 중이다냥.",
+        "text": "출근 중이다냥"
+      },
+      {
+        "at": 3.4,
+        "say": "여기 내 자리다냥. 아무도 앉지 마.",
+        "text": "여기 내 자리다냥\n아무도 앉지 마"
+      },
+      {
+        "at": 6.3,
+        "say": "한 바퀴, 두 바퀴.",
+        "text": "한 바퀴… 두 바퀴…"
+      },
+      {
+        "at": 8.6,
+        "say": "오늘 업무 끝. 퇴근이다냥.",
+        "text": "오늘 업무 끝\n퇴근이다냥"
+      }
+    ]
+  },
+  "texts": [
+    {
+      "text": "콧수염 길냥이 출근길",
+      "size": 80,
+      "from": 0,
+      "to": "end",
+      "box": "none"
+    },
+    {
+      "text": "자리 확실한 애 특징 ㅋㅋ\n우리 애 유형은 → 프로필 링크",
+      "pos": "abs",
+      "y": 1330,
+      "size": 64,
+      "from": 0,
+      "to": 1.8,
+      "after_voice": 0.15,
+      "box": "none"
+    }
+  ]
+}
