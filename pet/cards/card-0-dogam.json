@@ -1,0 +1,17 @@
+{
+  "layout": "grid",
+  "series": "댕냥 성격 도감",
+  "accent": "#C8F169",
+  "title": "우리 애는 몇 번?",
+  "sub": "댓글로 번호만 남겨줘 · 8가지 타입 한눈에",
+  "types": [
+    {"name": "활발한 사랑꾼", "line": "모든 사람이 다 친구", "face": "dog_sweet", "accent": "#FFB38A"},
+    {"name": "집사 바라기", "line": "느긋한데 집사만 졸졸", "face": "dog_adore", "accent": "#C8F169"},
+    {"name": "자유로운 영혼", "line": "혼자서도 잘 놀아요", "face": "cat_free", "accent": "#8FD3FF"},
+    {"name": "섬세한 감수성파", "line": "작은 소리에도 깜짝", "face": "cat_shy", "accent": "#FF8FC5"},
+    {"name": "장난꾸러기 탐험가", "line": "노는 게 인생", "face": "dog_rascal", "accent": "#FFD24A"},
+    {"name": "모범생 우등생", "line": "한 번 알려주면 끝", "face": "dog_smart", "accent": "#9FE8C9"},
+    {"name": "나만의 법칙 보스", "line": "이 집 서열 1위", "face": "cat_grumpy", "accent": "#C9B8FF"},
+    {"name": "유니크한 개성파", "line": "예측 불가 매력", "face": "cat_unique", "accent": "#FF8A7A"}
+  ]
+}

@@ -111,11 +111,34 @@ def cta(o, total):
 </div>"""
 
 
+def grid(o):
+    cells = ""
+    for i, t in enumerate(o["types"]):
+        cells += f"""<div style="display:flex;align-items:center;gap:16px;background:#fff;border:3.5px solid {INK};border-radius:28px;padding:16px 20px">
+  <div class="facewrap" style="width:118px;height:118px;flex-shrink:0;background:{t['accent']};border-width:3px">{FACES[t['face']]}</div>
+  <div style="min-width:0">
+    <div style="font-size:26px;font-weight:800;opacity:.45">{i + 1}번</div>
+    <div class="hand" style="font-size:39px;line-height:1.1;white-space:nowrap;letter-spacing:-0.05em;-webkit-text-stroke:1px {INK}">{esc(t['name'])}</div>
+    <div style="margin-top:6px;font-size:26px;font-weight:600;opacity:.7">{esc(t['line'])}</div>
+  </div>
+</div>"""
+    return f"""<div class="page" style="padding:70px 64px 64px">
+  <div class="top"><span class="chip">{esc(o['series'])}</span></div>
+  <div class="hand" style="margin-top:30px;font-size:84px;line-height:1.1">{esc(o['title'])}</div>
+  <div style="margin-top:14px;font-size:34px;font-weight:700">{esc(o['sub'])}</div>
+  <div style="flex:1;margin-top:34px;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:18px">{cells}</div>
+  <div style="margin-top:26px;text-align:center;font-size:32px;font-weight:700">진짜 타입은 1분 테스트로 → <b style="font-weight:800">pet.superstarkzal.com</b></div>
+</div>"""
+
+
 async def render(path):
     path = Path(path).resolve()
     o = json.loads(path.read_text(encoding="utf-8"))
-    total = len(o["items"]) + 2
-    pages = [cover(o, total)] + [item(o, i, it, total) for i, it in enumerate(o["items"])] + [cta(o, total)]
+    if o.get("layout") == "grid":
+        total, pages = 1, [grid(o)]
+    else:
+        total = len(o["items"]) + 2
+        pages = [cover(o, total)] + [item(o, i, it, total) for i, it in enumerate(o["items"])] + [cta(o, total)]
     out = path.parent / "out" / path.stem
     out.mkdir(parents=True, exist_ok=True)
     async with async_playwright() as p:
