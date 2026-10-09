@@ -313,7 +313,8 @@ def base_video(clips, tmp, total):
                      f"[bg][fg]overlay=0:{oy}")
         mr.run(["ffmpeg", "-y", "-ss", str(c.get("start", 0)), "-t", str(c["seconds"]), "-i", src, "-vf",
                 f"{cover},fps={FPS},setsar=1,"
-                f"tpad=stop_mode=clone:stop_duration=8,eq=saturation=1.06",
+                f"tpad=stop_mode=clone:stop_duration=8,eq=saturation=1.06"
+                + (f",{c['eq']}" if c.get("eq") else ""),  # 어두운 밤 영상 보정 등 (예: "eq=gamma=1.35:brightness=0.04")
                 "-t", str(c["seconds"]), "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", out])
         parts.append(out)
     lst = tmp / "base.txt"

@@ -1,0 +1,30 @@
+{
+  "name": "reel-9-cat-brothers-churu",
+  "timeline": true,
+  "seconds": 14.5,
+  "music": "lazy",
+  "zoom": false,
+  "clips": [
+    {"file": "pet/footage/user-cat-brothers-feet.mp4", "source": "사용자 촬영 IMG_5392 (동네에서 돌보는 고양이 형제)", "start": 0.0, "seconds": 2.0, "eq": "eq=gamma=1.1"},
+    {"file": "pet/footage/user-cat-brothers-churu.mp4", "source": "사용자 촬영 IMG_5393", "start": 4.5, "seconds": 2.0, "eq": "eq=gamma=1.35:brightness=0.03"},
+    {"file": "pet/footage/user-cat-brothers-churu.mp4", "source": "사용자 촬영 IMG_5393", "start": 15.0, "seconds": 3.0, "eq": "eq=gamma=1.35:brightness=0.03"},
+    {"file": "pet/footage/user-cat-brothers-two.mp4", "source": "사용자 촬영 IMG_5394", "start": 1.5, "seconds": 3.5, "eq": "eq=gamma=1.35:brightness=0.03"},
+    {"file": "pet/footage/user-cat-brothers-two.mp4", "source": "사용자 촬영 IMG_5394", "start": 18.5, "seconds": 4.0, "eq": "eq=gamma=1.35:brightness=0.03"}
+  ],
+  "voice": {
+    "name": "Zephyr",
+    "style": "cute, sweet and high-pitched like a tiny kitten, a little smug and sassy",
+    "box": "none",
+    "lines": [
+      {"at": 0.2, "say": "왔다냥? 오늘 츄르 있지?", "text": "왔다냥?\n오늘 츄르 있지?"},
+      {"at": 2.3, "say": "꼬리 바짝. 기다리는 중.", "text": "꼬리 바짝…\n기다리는 중"},
+      {"at": 4.3, "say": "이거지. 이 맛이지.", "text": "이거지…\n이 맛이지…"},
+      {"at": 7.2, "say": "야, 동생아. 저리 가. 내 거야.", "text": "야 동생아 저리 가\n내 거야"},
+      {"at": 10.7, "say": "알았다냥. 형제니까 같이 먹자.", "text": "…알았다냥\n형제니까 같이 먹자"}
+    ]
+  },
+  "texts": [
+    {"text": "츄르 앞 고양이 형제 속마음", "size": 76, "from": 0, "to": "end", "box": "none"},
+    {"text": "간식 앞에선 형제도 없음 ㅋㅋ\n너네 애는? → 프로필 링크", "pos": "abs", "y": 1330, "size": 60, "from": 0, "to": 1.8, "after_voice": 0.15, "box": "none"}
+  ]
+}
