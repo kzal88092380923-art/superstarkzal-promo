@@ -1,7 +1,7 @@
 {
   "name": "reel-9-cat-brothers-churu",
   "timeline": true,
-  "seconds": 18.3,
+  "seconds": 19.9,
   "music": "lazy",
   "zoom": false,
   "clips": [
@@ -37,7 +37,7 @@
       "file": "pet/footage/user-cat-brothers-two.mp4",
       "source": "사용자 촬영 IMG_5394",
       "start": 17.8,
-      "seconds": 4.7,
+      "seconds": 6.3,
       "eq": "eq=gamma=1.35:brightness=0.03"
     }
   ],
