@@ -26,8 +26,8 @@
     {
       "file": "pet/footage/user-mustache-cat-nap.mp4",
       "source": "사용자 촬영 IMG_5376",
-      "start": 2.3,
-      "seconds": 4.3
+      "start": 1.6,
+      "seconds": 5.0
     }
   ],
   "voice": {
@@ -46,14 +46,14 @@
         "text": "여기 내 자리다냥\n아무도 앉지 마"
       },
       {
-        "at": 6.3,
+        "at": 6.95,
         "say": "한 바퀴, 두 바퀴.",
         "text": "한 바퀴… 두 바퀴…"
       },
       {
-        "at": 8.6,
-        "say": "오늘 업무 끝. 퇴근이다냥.",
-        "text": "오늘 업무 끝\n퇴근이다냥"
+        "at": 9.3,
+        "say": "퇴근이다냥.",
+        "text": "퇴근이다냥"
       }
     ]
   },
